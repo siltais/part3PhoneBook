@@ -31,10 +31,11 @@ app.get('/api/persons', (request, response) => {
     response.json(persons)
 })
 
-app.get('/api/info', (request, response) => {
+app.get('/info', (request, response) => {
     let personsLength = persons.length
     response.send(`<p>Phonebook has info for ${personsLength} people </p> <p>${Date()}</p>`)
 })
+
   
 const PORT = 3001
 app.listen(PORT, () => {

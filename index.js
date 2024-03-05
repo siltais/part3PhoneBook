@@ -1,8 +1,10 @@
 const express = require('express')
 const app = express()
 const morgan = require('morgan')
+const cors = require('cors')
 
 app.use(express.json())
+app.use(cors())
 
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :dataSent'))
 morgan.token('dataSent', function(req) {
@@ -61,8 +63,10 @@ app.get('/api/persons/:id', (request, response) => {
 
 app.delete('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
-    persons = persons.filter(person => person.id !== id) 
-    response.status(204).end()
+    const removedPerson = persons.find(person => person.id === id)  
+    persons = persons.filter(person => person.id !== id)
+    response.json(removedPerson) 
+    //response.status(204).end()
 })
 
 const existsInArray = (newName) => {

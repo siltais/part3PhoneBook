@@ -66,8 +66,13 @@ app.delete('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
     const removedPerson = persons.find(person => person.id === id)  
     persons = persons.filter(person => person.id !== id)
-    response.json(removedPerson) 
-    //response.status(204).end()
+    if(removedPerson){
+      response.json(removedPerson) 
+      response.status(204).end()
+    }else{
+      response.status(404).end()
+    }
+
 })
 
 const existsInArray = (newName) => {

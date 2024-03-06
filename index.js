@@ -71,18 +71,6 @@ const existsInArray = (newName) => {
 app.post('/api/persons', (request, response, next) => {
     const body = request.body
     
-    if (!body.name || !body.number) {
-      return response.status(400).json({ 
-        error: 'name or number is missing' 
-      })
-    }
-
-    if (existsInArray(body.name)){
-      return response.status(409).json({ 
-          error: 'name must be unique' 
-      })
-  }
-
     const person = new Person({
       name: body.name,
       number: body.number,
@@ -96,15 +84,20 @@ app.post('/api/persons', (request, response, next) => {
 
   app.put('/api/persons/:id', (request, response, next) => {
     const body = request.body
-  
+
     const person = {
       name: body.name,
       number: body.number,
     }
   
-    Person.findByIdAndUpdate(request.params.id, person, {new: true})
+    Person
+    .findByIdAndUpdate(request.params.id, person, {new: true, runValidators: true})
       .then(updatedPerson => {
-        response.json(updatedPerson)
+        if(updatedPerson){
+          response.json(updatedPerson)
+        }else{
+          response.status(404).end()
+        }        
       })
       .catch(error => next(error))
   })
@@ -117,7 +110,9 @@ app.post('/api/persons', (request, response, next) => {
         .send({ 
           error: 'malformatted id' 
         })
-    } 
+    } else if (error.name === 'ValidationError') {
+      return response.status(400).json({ error: error.message })
+    }
     next(error)
   }
 

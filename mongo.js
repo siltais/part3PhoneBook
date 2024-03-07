@@ -9,7 +9,7 @@ const password = process.argv[2]
 
 const url =
   `mongodb+srv://fullstackopen:${password}@cluster0.i6yijrx.mongodb.net/persons?retryWrites=true&w=majority`
-  
+
 
 mongoose.set('strictQuery',false)
 
